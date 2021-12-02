@@ -1,8 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'dart:ui';
-import 'package:flutter/foundation.dart';
 
 bool debugPaintExpandAreaEnabled = false;
 Color debugPaintExpandAreaColor = const Color(0xFFFF0000).withOpacity(0.4);
@@ -24,9 +23,9 @@ class ExpandTapWidget extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) => _ExpandTapRenderBox(
-    onTap: onTap,
-    tapPadding: tapPadding,
-  );
+        onTap: onTap,
+        tapPadding: tapPadding,
+      );
 }
 
 class _TmpGestureArenaMember extends GestureArenaMember {
@@ -45,8 +44,7 @@ class _TmpGestureArenaMember extends GestureArenaMember {
   void rejectGesture(int key) {}
 }
 
-class _ExpandTapRenderBox extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class _ExpandTapRenderBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   _ExpandTapRenderBox({
     required this.onTap,
     this.tapPadding = EdgeInsets.zero,
@@ -67,7 +65,7 @@ class _ExpandTapRenderBox extends RenderBox
       final BoxParentData childParentData = child!.parentData! as BoxParentData;
       context.paintChild(child!, childParentData.offset + offset);
     }
-    if (debugPaintExpandAreaEnabled) {
+    if (debugPaintExpandAreaEnabled && kDebugMode) {
       debugPaintExpandArea(context, offset);
     }
   }
@@ -98,19 +96,18 @@ class _ExpandTapRenderBox extends RenderBox
       size.width + tapPadding.horizontal,
       size.height + tapPadding.vertical,
     );
-      final Paint paint = Paint()
-        ..style = PaintingStyle.fill
-        ..strokeWidth = 1.0
-        ..color = debugPaintExpandAreaColor;
+    final Paint paint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1.0
+      ..color = debugPaintExpandAreaColor;
 
-      final Paint paint2 = Paint()
-        ..style = PaintingStyle.fill
-        ..strokeWidth = 1.0
-        ..color = debugPaintClipAreaColor;
-      context.canvas.drawRect(paintRect, paint);
-      context.canvas.drawRect(paintRect.intersect(parentRect), paint2);
+    final Paint paint2 = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1.0
+      ..color = debugPaintClipAreaColor;
+    context.canvas.drawRect(paintRect, paint);
+    context.canvas.drawRect(paintRect.intersect(parentRect), paint2);
   }
-
 
   @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
@@ -131,7 +128,7 @@ class _ExpandTapRenderBox extends RenderBox
       if (child is RenderBox) {
         final BoxParentData parentData = child.parentData! as BoxParentData;
         if (child.hitTest(result, position: position! - parentData.offset)) {
-         return;
+          return;
         }
       }
     });
@@ -147,8 +144,7 @@ class _ExpandTapRenderBox extends RenderBox
       size.height + tapPadding.top + tapPadding.bottom,
     );
     if (expandRect.contains(position!)) {
-      bool hitTarget =
-          hitTestChildren(result, position: position) || hitTestSelf(position);
+      bool hitTarget = hitTestChildren(result, position: position) || hitTestSelf(position);
       if (hitTarget) {
         result.add(BoxHitTestEntry(this, position));
         return true;
